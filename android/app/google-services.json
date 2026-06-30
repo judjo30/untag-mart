@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "578330608013",
+    "project_id": "untag-mart",
+    "storage_bucket": "untag-mart.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578330608013:android:3921cad169c055d6b6bdc4",
+        "android_client_info": {
+          "package_name": "com.example.untag_mart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLShhALlBn0lpzENirSWEQHW_UbGSH0-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
