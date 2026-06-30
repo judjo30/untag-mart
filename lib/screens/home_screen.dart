@@ -1,11 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 import '../services/api_service.dart';
-import 'cart_screen.dart';
 import 'detail_screen.dart';
-import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,51 +24,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return "Rp ${harga.toStringAsFixed(0)}";
   }
 
-  Future<void> logout() async {
-    await FirebaseAuth.instance.signOut();
-
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: const Text("UNTAG Mart"),
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            onPressed: logout,
-            icon: const Icon(Icons.logout),
-          ),
-        ],
+        centerTitle: true,
       ),
-
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
-        child: const Icon(Icons.shopping_cart),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const CartScreen(),
-            ),
-          );
-        },
-      ),
-
       body: FutureBuilder<List<Product>>(
         future: futureProducts,
         builder: (context, snapshot) {
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -84,26 +49,64 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
 
-          final products = snapshot.data!;
+          final products = snapshot.data ?? [];
 
           return ListView.builder(
             padding: const EdgeInsets.all(15),
-            itemCount: products.length,
+            itemCount: products.length + 1,
             itemBuilder: (context, index) {
+              if (index == 0) {
+                return Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Halo, Selamat Datang 👋",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        "Temukan produk UMKM terbaik di UNTAG Mart",
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-              final product = products[index];
+              final product = products[index - 1];
 
               return Card(
                 elevation: 3,
                 margin: const EdgeInsets.only(bottom: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(12),
                   child: Row(
                     children: [
-
-                      SizedBox(
+                      Container(
                         width: 90,
                         height: 90,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: Image.network(
                           product.image,
                           fit: BoxFit.contain,
@@ -116,7 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-
                             Text(
                               product.title,
                               maxLines: 2,
@@ -127,11 +129,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
 
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 6),
 
                             Text(
-                              "Kategori : ${product.category}",
+                              product.category,
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                              ),
                             ),
+
+                            const SizedBox(height: 4),
 
                             Text(
                               "Stok : ${product.stock}",
@@ -146,16 +153,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
                                   Text(
                                     formatHarga(product.price),
                                     style: const TextStyle(
-                                      decoration:
-                                          TextDecoration.lineThrough,
+                                      decoration: TextDecoration.lineThrough,
                                       color: Colors.grey,
                                     ),
                                   ),
-
                                   Text(
                                     formatHarga(product.finalPrice),
                                     style: const TextStyle(
@@ -164,17 +168,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 18,
                                     ),
                                   ),
-
+                                  const SizedBox(height: 4),
                                   Container(
-                                    margin: const EdgeInsets.only(top: 4),
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 8,
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
                                       color: Colors.red,
-                                      borderRadius:
-                                          BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: Text(
                                       "DISKON ${product.discount}%",
@@ -188,10 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               )
                             else
                               Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
                                   Text(
                                     formatHarga(product.price),
                                     style: const TextStyle(
@@ -200,17 +200,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 18,
                                     ),
                                   ),
-
+                                  const SizedBox(height: 4),
                                   Container(
-                                    margin: const EdgeInsets.only(top: 4),
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 8,
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
                                       color: Colors.grey,
-                                      borderRadius:
-                                          BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: const Text(
                                       "TANPA DISKON",
@@ -229,7 +227,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: () {
-
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -244,16 +241,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                           "discount": product.discount,
                                           "discountAmount":
                                               product.discountAmount,
-                                          "finalPrice":
-                                              product.finalPrice,
+                                          "finalPrice": product.finalPrice,
                                         },
                                       ),
                                     ),
                                   );
                                 },
-                                child: const Text(
-                                  "Lihat Detail",
-                                ),
+                                child: const Text("Lihat Detail"),
                               ),
                             ),
                           ],

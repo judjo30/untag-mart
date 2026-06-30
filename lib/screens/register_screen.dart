@@ -28,19 +28,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => isLoading = true);
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
-      await FirebaseAuth.instance.currentUser?.updateDisplayName(
+      await credential.user?.updateDisplayName(
         nameController.text.trim(),
       );
+
+      await credential.user?.reload();
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Register berhasil, silakan login')),
+        const SnackBar(
+          content: Text('Register berhasil, silakan login'),
+        ),
       );
 
       Navigator.pop(context);
@@ -60,14 +65,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     }
 
-    setState(() => isLoading = false);
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.red.shade50,
-      appBar: AppBar(title: const Text('Register')),
+      appBar: AppBar(
+        title: const Text('Register'),
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Card(
@@ -81,7 +92,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 const Text(
                   'Buat Akun Baru',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 TextField(

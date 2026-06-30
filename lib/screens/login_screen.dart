@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'home_screen.dart';
+import 'main_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,7 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(
+          builder: (_) => const MainScreen(),
+        ),
       );
     } on FirebaseAuthException catch (e) {
       String message = 'Login gagal';
@@ -57,7 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
 
-    setState(() => isLoading = false);
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -77,11 +81,18 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.shopping_bag, size: 70, color: Colors.red.shade700),
+                  Icon(
+                    Icons.shopping_bag,
+                    size: 70,
+                    color: Colors.red.shade700,
+                  ),
                   const SizedBox(height: 12),
                   const Text(
                     'Login UNTAG Mart',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   TextField(
@@ -123,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: const Text('Belum punya akun? Register'),
-                  )
+                  ),
                 ],
               ),
             ),
